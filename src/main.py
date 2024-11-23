@@ -24,6 +24,7 @@ player2.deck = cards[8:]  # Asignar las cartas restantes a player2
 # Distribuir cartas iniciales a los jugadores
 player1.hand = cards[:4]  # Asignar las primeras 4 cartas a player1
 player2.hand = cards[4:8]  # Asignar las siguientes 4 cartas a player2
+stacked_cards = cards[8:]  # Las 25 cartas restantes
 
 print("Iniciando el bucle del juego...")
 
@@ -38,8 +39,9 @@ card_positions = {
     card: (50 + i * 150, 50) for i, card in enumerate(player1.hand)
 }
 card_positions.update({
-    card: (50 + i * 150, 900) for i, card in enumerate(player2.hand)
+    card: (50 + i * 150, 600) for i, card in enumerate(player2.hand)
 })
+stack_position = (600, 300)  # Posición fija para las cartas apiladas
 
 running = True
 while running:
@@ -56,6 +58,14 @@ while running:
                     offset_x = pos[0] - mouse_x
                     offset_y = pos[1] - mouse_y
                     break
+            if not dragging:
+                card_rect = pygame.Rect(stack_position, (100, 150))
+                if card_rect.collidepoint(mouse_x, mouse_y) and stacked_cards:
+                    dragging = True
+                    dragged_card = stacked_cards.pop()
+                    offset_x = stack_position[0] - mouse_x
+                    offset_y = stack_position[1] - mouse_y
+                    card_positions[dragged_card] = stack_position
         elif event.type == pygame.MOUSEBUTTONUP:
             if dragging:
                 dragging = False
@@ -67,15 +77,21 @@ while running:
 
     screen.fill((0, 0, 0))
 
+    # Dibujar las cartas apiladas
+    if stacked_cards:
+        for card in stacked_cards:
+            small_image = pygame.transform.smoothscale(card.image, (100, 150))
+            screen.blit(small_image, stack_position)
+
     # Dibujar las cartas en sus posiciones actuales
     for card, pos in card_positions.items():
         small_image = pygame.transform.smoothscale(card.image, (100, 150))
         screen.blit(small_image, pos)
 
-    # Dibujar la carta arrastrada en grande
+    # Dibujar la carta arrastrada en grande en la esquina superior derecha
     if dragging and dragged_card:
-        large_image = pygame.transform.smoothscale(dragged_card.image, (400, 600))
-        screen.blit(large_image, (440, 60))  # Posicionar la carta grande en el centro de la pantalla
+        large_image = pygame.transform.smoothscale(dragged_card.image, (300, 450))
+        screen.blit(large_image, (980, 20))  # Posicionar la carta grande en la esquina superior derecha
 
     pygame.display.flip()
 
