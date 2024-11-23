@@ -27,8 +27,24 @@ cards_info = [
     ("Holy Knight", "assets/cards/Carta_13.jpg"),
     ("Primuss", "assets/cards/Carta_14.jpg"),
     ("Foxy Sutaru", "assets/cards/Carta_15.jpg"),
-    ("ZeroV0lt", "assets/cards/Carta_16.jpg")
-    
+    ("ZeroV0lt", "assets/cards/Carta_16.jpg"),
+    ("Compadrito", "assets/cards/Carta_17.jpg"),
+    ("Migue", "assets/cards/Carta_18.jpg"),
+    ("Natari", "assets/cards/Carta_19.jpg"),
+    ("Kimura", "assets/cards/Carta_20.jpg"),
+    ("Trester", "assets/cards/Carta_21.jpg"),
+    ("Rakkun", "assets/cards/Carta_22.jpg"),
+    ("Tomoe", "assets/cards/Carta_23.jpg"),
+    ("Yumiko", "assets/cards/Carta_24.jpg"),
+    ("Rekky", "assets/cards/Carta_25.jpg"),
+    ("Niños", "assets/cards/Carta_26.jpg"),
+    ("Espada", "assets/cards/Carta_27.jpg"),
+    ("Puños", "assets/cards/Carta_28.jpg"),
+    ("Mascara", "assets/cards/Carta_29.jpg"),
+    ("Paz", "assets/cards/Carta_30.jpg"),
+    ("Propuesta", "assets/cards/Carta_31.jpg"),
+    ("Caos", "assets/cards/Carta_32.jpg"),
+    ("Parry", "assets/cards/Carta_33.jpg")
 ]
 
 # Crear las cartas
