@@ -66,6 +66,24 @@ field_modes = {
 graveyard = []
 graveyard_index = 0
 
+# Contadores de vida
+player1_life = 5000
+player2_life = 5000
+
+# Fuentes
+font = pygame.font.Font(None, 36)
+
+# Campos de input para los nombres de los jugadores
+input_active = False
+active_player = None
+player1_name = ""
+player2_name = ""
+
+# Variables para el input de vida
+life_input_active = False
+active_life_player = None
+life_input = ""
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -110,6 +128,16 @@ while running:
                                     break
                             if dragging:
                                 break
+                # Activar el input de vida si se hace clic en el contador de vida
+                if not dragging:
+                    if 600 <= mouse_x <= 700 and 250 <= mouse_y <= 290:
+                        life_input_active = True
+                        active_life_player = "player1"
+                        life_input = str(player1_life)
+                    elif 600 <= mouse_x <= 700 and 650 <= mouse_y <= 690:
+                        life_input_active = True
+                        active_life_player = "player2"
+                        life_input = str(player2_life)
             elif event.button == 3:  # Botón derecho del mouse
                 mouse_x, mouse_y = event.pos
                 for player, positions in field_positions.items():
@@ -151,9 +179,57 @@ while running:
                     if card_rect.collidepoint(mouse_x, mouse_y):
                         hovered_card = card
                         break
+                if not hovered_card:
+                    for player, positions in field_positions.items():
+                        for i, pos in enumerate(positions):
+                            card_rect = pygame.Rect(pos, (100, 150))
+                            if card_rect.collidepoint(mouse_x, mouse_y) and field_cards[player][i]:
+                                hovered_card = field_cards[player][i]
+                                break
+                        if hovered_card:
+                            break
+                    if not hovered_card and stacked_cards:
+                        card_rect = pygame.Rect(stack_position, (100, 150))
+                        if card_rect.collidepoint(mouse_x, mouse_y):
+                            hovered_card = stacked_cards[-1]
+                    if not hovered_card and graveyard:
+                        card_rect = pygame.Rect(graveyard_position, (100, 150))
+                        if card_rect.collidepoint(mouse_x, mouse_y):
+                            hovered_card = graveyard[graveyard_index]
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and graveyard:
                 graveyard_index = (graveyard_index + 1) % len(graveyard)
+            elif event.key == pygame.K_RETURN:
+                if input_active:
+                    input_active = False
+                    active_player = None
+                elif life_input_active:
+                    if active_life_player == "player1":
+                        player1_life = int(life_input) if life_input.isdigit() else player1_life
+                    else:
+                        player2_life = int(life_input) if life_input.isdigit() else player2_life
+                    life_input = ""
+                    life_input_active = False
+                    active_life_player = None
+                else:
+                    input_active = True
+                    active_player = "player1" if player1_name == "" else "player2"
+            elif input_active:
+                if event.key == pygame.K_BACKSPACE:
+                    if active_player == "player1":
+                        player1_name = player1_name[:-1]
+                    else:
+                        player2_name = player2_name[:-1]
+                else:
+                    if active_player == "player1":
+                        player1_name += event.unicode
+                    else:
+                        player2_name += event.unicode
+            elif life_input_active:
+                if event.key == pygame.K_BACKSPACE:
+                    life_input = life_input[:-1]
+                elif event.unicode.isdigit():
+                    life_input += event.unicode
 
     screen.fill((0, 0, 0))
 
@@ -195,6 +271,21 @@ while running:
     if hovered_card:
         large_image = pygame.transform.smoothscale(hovered_card.image, (300, 450))
         screen.blit(large_image, (980, 20))  # Posicionar la carta grande en la esquina superior derecha
+
+    # Dibujar los contadores de vida
+    player1_life_text = font.render(f"{player1_name}: {player1_life}", True, (255, 255, 255))
+    player2_life_text = font.render(f"{player2_name}: {player2_life}", True, (255, 255, 255))
+    screen.blit(player1_life_text, (600, 250))
+    screen.blit(player2_life_text, (600, 650))
+
+    # Dibujar el contorno ámbar para los espacios de input de nombre y contador de vida
+    pygame.draw.rect(screen, (255, 191, 0), (600, 250, 200, 40), 2)  # Contorno para el contador de vida del jugador 1
+    pygame.draw.rect(screen, (255, 191, 0), (600, 650, 200, 40), 2)  # Contorno para el contador de vida del jugador 2
+
+    # Dibujar el input de vida si está activo
+    if life_input_active:
+        life_input_text = font.render(life_input, True, (255, 255, 255))
+        screen.blit(life_input_text, (600, 290 if active_life_player == "player1" else 690))
 
     pygame.display.flip()
 

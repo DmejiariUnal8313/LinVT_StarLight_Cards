@@ -44,7 +44,18 @@ cards_info = [
     ("Paz", "assets/cards/Carta_30.jpg"),
     ("Propuesta", "assets/cards/Carta_31.jpg"),
     ("Caos", "assets/cards/Carta_32.jpg"),
-    ("Parry", "assets/cards/Carta_33.jpg")
+    ("Parry", "assets/cards/Carta_33.jpg"),
+    ("Worthcat", "assets/cards/Carta_34.jpg"),
+    ("Ataque Sorpresa", "assets/cards/Carta_35.jpg"),
+    ("MalaMujer", "assets/cards/Carta_36.jpg"),
+    ("Verdadera", "assets/cards/Carta_37.jpg"),
+    ("BajoPerfil", "assets/cards/Carta_38.jpg"),
+    ("DobleONada", "assets/cards/Carta_39.jpg"),
+    ("Neru", "assets/cards/Carta_40.jpg"),
+    ("Interesante", "assets/cards/Carta_41.jpg"),
+    ("TwistedZid", "assets/cards/Carta_42.jpg"),
+    ("Secreto", "assets/cards/Carta_43.jpg"),
+    ("Comienzo", "assets/cards/Carta_44.jpg")
 ]
 
 # Crear las cartas
