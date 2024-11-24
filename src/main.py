@@ -3,8 +3,8 @@ import random
 
 pygame.init()
 
-# Ajustar la resolución de la ventana a 1280x720
-screen = pygame.display.set_mode((1280, 720))
+# Ajustar la resolución de la ventana a 1600x900
+screen = pygame.display.set_mode((1600, 900))
 pygame.display.set_caption("Proyecto comunidad LinVT")
 
 from game import Game
@@ -25,7 +25,7 @@ player2.deck = cards[8:]  # Asignar las cartas restantes a player2
 # Distribuir cartas iniciales a los jugadores
 player1.hand = cards[:4]  # Asignar las primeras 4 cartas a player1
 player2.hand = cards[4:8]  # Asignar las siguientes 4 cartas a player2
-stacked_cards = cards[8:]  # Las 25 cartas restantes
+stacked_cards = cards[8:]  # Las cartas restantes
 
 print("Iniciando el bucle del juego...")
 
@@ -43,23 +43,23 @@ card_positions = {
 card_positions.update({
     card: (50 + i * 150, 600) for i, card in enumerate(player2.hand)
 })
-stack_position = (600, 300)  # Posición fija para las cartas apiladas
-graveyard_position = (600, 500)  # Posición fija para el cementerio
+stack_position = (1400, 300)  # Posición fija para las cartas apiladas
+graveyard_position = (1400, 500)  # Posición fija para el cementerio
 
 # Espacios en el campo para las cartas
 field_positions = {
-    "player1": [(50 + i * 150, 200) for i in range(4)],
-    "player2": [(50 + i * 150, 400) for i in range(4)]
+    "player1": [(50 + i * 150, 200) for i in range(7)],
+    "player2": [(50 + i * 150, 400) for i in range(7)]
 }
 
 # Estado de las cartas en el campo (ataque o defensa)
 field_cards = {
-    "player1": [None] * 4,
-    "player2": [None] * 4
+    "player1": [None] * 7,
+    "player2": [None] * 7
 }
 field_modes = {
-    "player1": ["attack"] * 4,
-    "player2": ["attack"] * 4
+    "player1": ["attack"] * 7,
+    "player2": ["attack"] * 7
 }
 
 # Cementerio
@@ -67,17 +67,17 @@ graveyard = []
 graveyard_index = 0
 
 # Contadores de vida
-player1_life = 5000
-player2_life = 5000
+player1_life = 4000
+player2_life = 4000
 
 # Fuentes
 font = pygame.font.Font(None, 36)
 
 # Campos de input para los nombres de los jugadores
-input_active = False
-active_player = None
 player1_name = ""
 player2_name = ""
+input_active = False
+active_player = None
 
 # Variables para el input de vida
 life_input_active = False
@@ -130,14 +130,20 @@ while running:
                                 break
                 # Activar el input de vida si se hace clic en el contador de vida
                 if not dragging:
-                    if 600 <= mouse_x <= 700 and 250 <= mouse_y <= 290:
+                    if 1400 <= mouse_x <= 1500 and 250 <= mouse_y <= 290:
                         life_input_active = True
                         active_life_player = "player1"
                         life_input = str(player1_life)
-                    elif 600 <= mouse_x <= 700 and 650 <= mouse_y <= 690:
+                    elif 1400 <= mouse_x <= 1500 and 650 <= mouse_y <= 690:
                         life_input_active = True
                         active_life_player = "player2"
                         life_input = str(player2_life)
+                    elif 50 <= mouse_x <= 250 and 10 <= mouse_y <= 50:
+                        input_active = True
+                        active_player = "player1"
+                    elif 50 <= mouse_x <= 250 and 750 <= mouse_y <= 790:
+                        input_active = True
+                        active_player = "player2"
             elif event.button == 3:  # Botón derecho del mouse
                 mouse_x, mouse_y = event.pos
                 for player, positions in field_positions.items():
@@ -211,9 +217,6 @@ while running:
                     life_input = ""
                     life_input_active = False
                     active_life_player = None
-                else:
-                    input_active = True
-                    active_player = "player1" if player1_name == "" else "player2"
             elif input_active:
                 if event.key == pygame.K_BACKSPACE:
                     if active_player == "player1":
@@ -253,6 +256,8 @@ while running:
     # Dibujar las cartas en el campo
     for player, positions in field_positions.items():
         for i, pos in enumerate(positions):
+            # Dibujar el contorno blanco para los campos de cartas
+            pygame.draw.rect(screen, (255, 255, 255), (pos[0], pos[1], 100, 150), 2)
             card = field_cards[player][i]
             if card:
                 if field_modes[player][i] == "attack":
@@ -270,22 +275,30 @@ while running:
     # Dibujar la carta arrastrada en grande en la esquina superior derecha
     if hovered_card:
         large_image = pygame.transform.smoothscale(hovered_card.image, (300, 450))
-        screen.blit(large_image, (980, 20))  # Posicionar la carta grande en la esquina superior derecha
+        screen.blit(large_image, (1300, 20))  # Posicionar la carta grande en la esquina superior derecha
+
+    # Dibujar los nombres de los jugadores
+    player1_name_text = font.render(player1_name, True, (255, 255, 255))
+    player2_name_text = font.render(player2_name, True, (255, 255, 255))
+    screen.blit(player1_name_text, (50, 10))
+    screen.blit(player2_name_text, (50, 750))
 
     # Dibujar los contadores de vida
     player1_life_text = font.render(f"{player1_name}: {player1_life}", True, (255, 255, 255))
     player2_life_text = font.render(f"{player2_name}: {player2_life}", True, (255, 255, 255))
-    screen.blit(player1_life_text, (600, 250))
-    screen.blit(player2_life_text, (600, 650))
+    screen.blit(player1_life_text, (1400, 250))
+    screen.blit(player2_life_text, (1400, 650))
 
     # Dibujar el contorno ámbar para los espacios de input de nombre y contador de vida
-    pygame.draw.rect(screen, (255, 191, 0), (600, 250, 200, 40), 2)  # Contorno para el contador de vida del jugador 1
-    pygame.draw.rect(screen, (255, 191, 0), (600, 650, 200, 40), 2)  # Contorno para el contador de vida del jugador 2
+    pygame.draw.rect(screen, (255, 191, 0), (50, 10, 200, 40), 2)  # Contorno para el nombre del jugador 1
+    pygame.draw.rect(screen, (255, 191, 0), (50, 750, 200, 40), 2)  # Contorno para el nombre del jugador 2
+    pygame.draw.rect(screen, (255, 191, 0), (1400, 250, 200, 40), 2)  # Contorno para el contador de vida del jugador 1
+    pygame.draw.rect(screen, (255, 191, 0), (1400, 650, 200, 40), 2)  # Contorno para el contador de vida del jugador 2
 
     # Dibujar el input de vida si está activo
     if life_input_active:
         life_input_text = font.render(life_input, True, (255, 255, 255))
-        screen.blit(life_input_text, (600, 290 if active_life_player == "player1" else 690))
+        screen.blit(life_input_text, (1400, 290 if active_life_player == "player1" else 690))
 
     pygame.display.flip()
 
