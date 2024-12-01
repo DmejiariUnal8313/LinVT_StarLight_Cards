@@ -1,11 +1,62 @@
 import pygame
 import random
+import sys
 
 pygame.init()
 
-# Ajustar la resolución de la ventana a 1600x900
-screen = pygame.display.set_mode((1600, 900))
+# Opciones de resolución
+resolutions = [
+    (800, 600), (1024, 768), (1128, 634), (1280, 720), (1280, 1024),
+    (1366, 768), (1600, 900), (1680, 1050), (1760, 990), (1920, 1080)
+]
+
+# Resolución predeterminada
+current_resolution = (1600, 900)
+
+# Ajustar la resolución de la ventana
+screen = pygame.display.set_mode(current_resolution)
 pygame.display.set_caption("Proyecto comunidad LinVT")
+
+# Colores
+WHITE = (255, 255, 255)
+AMBER = (255, 191, 0)
+
+# Generar posiciones de las estrellas una sola vez
+stars = [(random.randint(0, current_resolution[0]), random.randint(0, current_resolution[1])) for _ in range(50)]
+
+def draw_background():
+    screen.fill(AMBER)
+    for x, y in stars:
+        pygame.draw.circle(screen, WHITE, (x, y), 4)  # Estrellas más grandes
+
+def draw_text(text, position, font, color=(0, 0, 0)):
+    rendered_text = font.render(text, True, color)
+    screen.blit(rendered_text, position)
+
+def select_resolution():
+    global screen, current_resolution
+    font = pygame.font.Font(None, 36)
+    draw_background()
+    for i, res in enumerate(resolutions):
+        draw_text(f"{res[0]}x{res[1]}", (300, 100 + i * 40), font)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                for i, res in enumerate(resolutions):
+                    if 300 <= mouse_x <= 500 and 100 + i * 40 <= mouse_y <= 140 + i * 40:
+                        current_resolution = res
+                        screen = pygame.display.set_mode(current_resolution)
+                        waiting = False
+                        break
+
+# Mostrar el menú de selección de resolución al inicio
+select_resolution()
 
 # Importar clases y datos necesarios
 from game import Game
@@ -45,8 +96,8 @@ card_positions = {
 card_positions.update({
     card: (50 + i * 150, 675) for i, card in enumerate(player2.hand)
 })
-stack_position = (1400, 30)  # Posición fija para las cartas apiladas
-graveyard_position = (1400, 700)  # Posición fija para el cementerio
+stack_position = (current_resolution[0] - 200, 30)  # Posición fija para las cartas apiladas
+graveyard_position = (current_resolution[0] - 200, current_resolution[1] - 200)  # Posición fija para el cementerio
 
 # Espacios en el campo para las cartas
 field_positions = {
@@ -236,7 +287,7 @@ while running:
                 elif event.unicode.isdigit():
                     life_input += event.unicode
 
-    screen.fill((0, 0, 0))
+    draw_background()
 
     # Dibujar el fondo ámbar para el stack
     pygame.draw.rect(screen, (255, 191, 0), (stack_position[0], stack_position[1], 100, 150), 2)
@@ -292,15 +343,20 @@ while running:
     screen.blit(player2_life_text, (250, 825))
 
     # Dibujar el contorno ámbar para los espacios de input de nombre y contador de vida
-    pygame.draw.rect(screen, (255, 191, 0), (50, 30, 200, 40), 2)  # Contorno para el nombre del jugador 1
-    pygame.draw.rect(screen, (255, 191, 0), (50, 825, 200, 40), 2)  # Contorno para el nombre del jugador 2
-    pygame.draw.rect(screen, (255, 191, 0), (250, 30, 200, 40), 2)  # Contorno para el contador de vida del jugador 1
-    pygame.draw.rect(screen, (255, 191, 0), (250, 825, 200, 40), 2)  # Contorno para el contador de vida del jugador 2
+    pygame.draw.rect(screen, (0, 0, 0), (50, 30, 200, 40), 2)  # Contorno para el nombre del jugador 1
+    pygame.draw.rect(screen, (0, 0, 0), (50, 825, 200, 40), 2)  # Contorno para el nombre del jugador 2
+    pygame.draw.rect(screen, (0, 0, 0), (250, 30, 200, 40), 2)  # Contorno para el contador de vida del jugador 1
+    pygame.draw.rect(screen, (0, 0, 0), (250, 825, 200, 40), 2)  # Contorno para el contador de vida del jugador 2
 
     # Dibujar el input de vida si está activo
     if life_input_active:
         life_input_text = font.render(life_input, True, (255, 255, 255))
-        screen.blit(life_input_text, (1400, 290 if active_life_player == "player1" else 690))
+        screen.blit(life_input_text, (250, 30 if active_life_player == "player1" else 825))
+
+    # Dibujar el input de nombre si está activo
+    if input_active:
+        name_input_text = font.render(player1_name if active_player == "player1" else player2_name, True, (255, 255, 255))
+        screen.blit(name_input_text, (50, 30 if active_player == "player1" else 825))
 
     # Dibujar el contador de cartas en el stack
     stack_count_text = font.render(f"Stack: {len(stacked_cards)}", True, (255, 255, 255))
