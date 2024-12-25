@@ -32,12 +32,14 @@ resolutions = [
 ]
 
 # Generar posiciones de las estrellas una sola vez
-stars = [(random.randint(0, 800), random.randint(0, 600)) for _ in range(50)]
+stars = [(random.randint(0, 800), random.randint(0, 600), random.choice([WHITE, BLACK])) for _ in range(50)]
 
 def draw_background():
     screen.fill(AMBER)
-    for x, y in stars:
-        pygame.draw.circle(screen, WHITE, (x, y), 4)  # Estrellas más grandes
+    for i, (x, y, color) in enumerate(stars):
+        pygame.draw.circle(screen, color, (x, y), 4)  # Estrellas más grandes
+        # Mover las estrellas lentamente
+        stars[i] = (x + random.choice([-1, 0, 1]), y + random.choice([-1, 0, 1]), color)
 
 def draw_buttons():
     for button in buttons:
@@ -46,7 +48,7 @@ def draw_buttons():
         screen.blit(text, (button["rect"].x + 10, button["rect"].y + 10))
 
 def start_game():
-    subprocess.Popen([sys.executable, "D:\VSCode\LinVT_StarLight_Cards\src\main.py"])
+    subprocess.Popen([sys.executable, "D:\\VSCode\\LinVT_StarLight_Cards\\src\\main.py"])
 
 def view_cards():
     # Aquí puedes agregar la lógica para ver todas las cartas
@@ -74,6 +76,7 @@ def change_resolution():
                         break
 
 running = True
+clock = pygame.time.Clock()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -92,6 +95,7 @@ while running:
     draw_background()
     draw_buttons()
     pygame.display.flip()
+    clock.tick(30)  # Limitar la velocidad de fotogramas a 30 FPS
 
 pygame.quit()
 sys.exit()

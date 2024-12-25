@@ -55,7 +55,13 @@ cards_info = [
     ("Interesante", "assets/cards/Carta_41.jpg"),
     ("TwistedZid", "assets/cards/Carta_42.jpg"),
     ("Secreto", "assets/cards/Carta_43.jpg"),
-    ("Comienzo", "assets/cards/Carta_44.jpg")
+    ("Comienzo", "assets/cards/Carta_44.jpg"),
+    ("Maxwell", "assets/cards/Carta_45.jpg"),
+    ("Alto Mando", "assets/cards/Carta_46.jpg"),
+    ("Lluvia de Ideas", "assets/cards/Carta_47.jpg"),
+    ("Día de Playa (Chicos)", "assets/cards/Carta_48.jpg"),
+    ("Día de Playa (Chicas)", "assets/cards/Carta_49.jpg"),
+    ("Y Eso Sería Todo por Hoy", "assets/cards/Carta_50.jpg")
 ]
 
 # Crear las cartas

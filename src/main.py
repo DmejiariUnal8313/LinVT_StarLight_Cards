@@ -20,14 +20,17 @@ pygame.display.set_caption("Proyecto comunidad LinVT")
 # Colores
 WHITE = (255, 255, 255)
 AMBER = (255, 191, 0)
+BLACK = (0, 0, 0)
 
 # Generar posiciones de las estrellas una sola vez
-stars = [(random.randint(0, current_resolution[0]), random.randint(0, current_resolution[1])) for _ in range(50)]
+stars = [(random.randint(0, 1600), random.randint(0, 900), random.choice([WHITE, BLACK])) for _ in range(50)]
 
 def draw_background():
     screen.fill(AMBER)
-    for x, y in stars:
-        pygame.draw.circle(screen, WHITE, (x, y), 4)  # Estrellas más grandes
+    for i, (x, y, color) in enumerate(stars):
+        pygame.draw.circle(screen, color, (x, y), 4)  # Estrellas más grandes
+        # Mover las estrellas lentamente
+        stars[i] = (x + random.choice([-1, 0, 1]), y + random.choice([-1, 0, 1]), color)
 
 def draw_text(text, position, font, color=(0, 0, 0)):
     rendered_text = font.render(text, True, color)
@@ -138,6 +141,7 @@ active_life_player = None
 life_input = ""
 
 running = True
+clock = pygame.time.Clock()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -367,6 +371,7 @@ while running:
     screen.blit(graveyard_count_text, (graveyard_position[0] - 150, graveyard_position[1]))
 
     pygame.display.flip()
+    clock.tick(30)
 
 pygame.quit()
 print("Juego terminado.")
