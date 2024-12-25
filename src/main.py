@@ -29,8 +29,12 @@ def draw_background():
     screen.fill(AMBER)
     for i, (x, y, color) in enumerate(stars):
         pygame.draw.circle(screen, color, (x, y), 4)  # Estrellas más grandes
-        # Mover las estrellas lentamente
-        stars[i] = (x + random.choice([-1, 0, 1]), y + random.choice([-1, 0, 1]), color)
+        # Mover las estrellas horizontalmente
+        x += 1
+        if x > 1600:  # Si la estrella sale de la pantalla, reiniciar su posición
+            x = 0
+            y = random.randint(0, 900)
+        stars[i] = (x, y, color)
 
 def draw_text(text, position, font, color=(0, 0, 0)):
     rendered_text = font.render(text, True, color)
