@@ -21,6 +21,8 @@ pygame.display.set_caption("Proyecto comunidad LinVT")
 WHITE = (255, 255, 255)
 AMBER = (255, 191, 0)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 
 # Generar posiciones de las estrellas una sola vez
 stars = [(random.randint(0, 1600), random.randint(0, 900), random.choice([WHITE, BLACK])) for _ in range(50)]
@@ -313,7 +315,7 @@ while running:
     for card, pos in card_positions.items():
         small_image = pygame.transform.smoothscale(card.image, (100, 150))
         screen.blit(small_image, pos)
-
+    
     # Dibujar las cartas en el campo
     for player, positions in field_positions.items():
         for i, pos in enumerate(positions):
@@ -327,6 +329,10 @@ while running:
                     small_image = pygame.transform.smoothscale(card.image, (150, 100))
                     small_image = pygame.transform.rotate(small_image, 90)
                 screen.blit(small_image, pos)
+
+                # Dibujar ATK y DEF de la carta en el campo
+                draw_text(f"ATK: {card.atk}", (pos[0], pos[1] + 160), font, RED)
+                draw_text(f"DEF: {card.def_}", (pos[0], pos[1] + 180), font, BLUE)
 
     # Dibujar las cartas en el cementerio
     if graveyard:
