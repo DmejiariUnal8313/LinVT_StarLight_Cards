@@ -28,7 +28,7 @@ BLUE = (0, 0, 255)
 stars = [(random.randint(0, 1600), random.randint(0, 900), random.choice([WHITE, BLACK])) for _ in range(50)]
 
 # Área para mostrar la descripción de la carta
-description_area = pygame.Rect(50, 600, 500, 250)  # Rectángulo para la descripción (x, y, ancho, alto)
+description_area = pygame.Rect(700, 700, 325, 150)  # Rectángulo para la descripción (x, y, ancho, alto)
 
 def draw_description(card):
     """Dibuja la descripción de una carta en el área de descripción."""
@@ -367,7 +367,7 @@ while running:
 
     # Dibujar la descripción de la carta seleccionada
     draw_description(hovered_card)
-    
+
     # Dibujar las cartas en el cementerio
     if graveyard:
         small_image = pygame.transform.smoothscale(graveyard[graveyard_index].image, (100, 150))
