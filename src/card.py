@@ -1,16 +1,45 @@
 from utils import load_image
 
 class Card:
-    def __init__(self, name, image_path, atk, def_, effect):
+    def __init__(self, name, image_path, base_atk, base_def, effect):
         self.name = name
         self.image_path = image_path
         self.image = load_image(image_path)
-        self.atk = atk
-        self.def_ = def_
+        
+        # Tipo de Stat 1: Stats base
+        self.base_atk = base_atk
+        self.base_def = base_def
+        
+        # Tipo de Stat 2: Stats cambiantes (buffs y debuffs)
+        self.dynamic_atk = 0
+        self.dynamic_def = 0
+        
+        # Tipo de Stat 3: Stats arregladas (dependen de habilidades)
+        self.fixed_atk = 0
+        self.fixed_def = 0
+        
         self.effect = effect
     
     def use(self, target):
         self.effect(target)
+
+    def get_total_atk(self):
+        """Calcula el ataque total de la carta."""
+        return self.base_atk + self.dynamic_atk + self.fixed_atk
+
+    def get_total_def(self):
+        """Calcula la defensa total de la carta."""
+        return self.base_def + self.dynamic_def + self.fixed_def
+
+    def get_description(self):
+        """Devuelve una descripción de la carta con sus estadísticas."""
+        return (
+            f"Nombre: {self.name}\n"
+            f"ATK Base: {self.base_atk}, DEF Base: {self.base_def}\n"
+            f"ATK Cambiante: {self.dynamic_atk}, DEF Cambiante: {self.dynamic_def}\n"
+            f"ATK Arreglado: {self.fixed_atk}, DEF Arreglado: {self.fixed_def}\n"
+            f"ATK Total: {self.get_total_atk()}, DEF Total: {self.get_total_def()}"
+        )
 
 # Definir las cartas con sus nombres y rutas de imagen
 cards_info = [

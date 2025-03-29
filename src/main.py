@@ -27,6 +27,23 @@ BLUE = (0, 0, 255)
 # Generar posiciones de las estrellas una sola vez
 stars = [(random.randint(0, 1600), random.randint(0, 900), random.choice([WHITE, BLACK])) for _ in range(50)]
 
+# Área para mostrar la descripción de la carta
+description_area = pygame.Rect(50, 600, 500, 250)  # Rectángulo para la descripción (x, y, ancho, alto)
+
+def draw_description(card):
+    """Dibuja la descripción de una carta en el área de descripción."""
+    if card:
+        # Fondo para la descripción
+        pygame.draw.rect(screen, (0, 0, 0), description_area)  # Fondo negro
+        pygame.draw.rect(screen, (255, 255, 255), description_area, 2)  # Borde blanco
+
+        # Texto de la descripción
+        description_lines = card.get_description().split("\n")
+        font = pygame.font.Font(None, 24)
+        for i, line in enumerate(description_lines):
+            text_surface = font.render(line, True, (255, 255, 255))
+            screen.blit(text_surface, (description_area.x + 10, description_area.y + 10 + i * 30))
+
 def draw_background():
     screen.fill(AMBER)
     for i, (x, y, color) in enumerate(stars):
@@ -154,6 +171,20 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
+            hovered_card = None
+            for card, pos in card_positions.items():
+                card_rect = pygame.Rect(pos, (100, 150))
+                if card_rect.collidepoint(mouse_x, mouse_y):
+                    hovered_card = card
+                    break
+            if not hovered_card:
+                for player, positions in field_positions.items():
+                    for i, pos in enumerate(positions):
+                        card_rect = pygame.Rect(pos, (100, 150))
+                        if card_rect.collidepoint(mouse_x, mouse_y) and field_cards[player][i]:
+                            hovered_card = field_cards[player][i]
+                            break
+
             if event.button == 1:  # Botón izquierdo del mouse
                 for card, pos in card_positions.items():
                     card_rect = pygame.Rect(pos, (100, 150))
@@ -334,6 +365,9 @@ while running:
                 draw_text(f"ATK: {card.atk}", (pos[0], pos[1] + 160), font, RED)
                 draw_text(f"DEF: {card.def_}", (pos[0], pos[1] + 180), font, BLUE)
 
+    # Dibujar la descripción de la carta seleccionada
+    draw_description(hovered_card)
+    
     # Dibujar las cartas en el cementerio
     if graveyard:
         small_image = pygame.transform.smoothscale(graveyard[graveyard_index].image, (100, 150))
