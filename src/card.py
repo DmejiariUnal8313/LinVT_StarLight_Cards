@@ -64,7 +64,7 @@ cards_info = [
     ("Natari", "assets/cards/Carta_19.jpg",500,500),
     ("Kimura", "assets/cards/Carta_20.jpg",300,700),
     ("Trester", "assets/cards/Carta_21.jpg",100,600),
-    ("Rakkun", "assets/cards/Carta_22.jpg",500,500),
+    ##("Rakkun", "assets/cards/Carta_22.jpg",500,500),
     ("Tomoe", "assets/cards/Carta_23.jpg",500,500),
     ("Yumiko", "assets/cards/Carta_24.jpg",1000,0),
     ("Rekky", "assets/cards/Carta_25.jpg",600,400),
