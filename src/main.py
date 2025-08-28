@@ -362,8 +362,8 @@ while running:
                 screen.blit(small_image, pos)
 
                 # Dibujar ATK y DEF de la carta en el campo
-                draw_text(f"ATK: {card.atk}", (pos[0], pos[1] + 160), font, RED)
-                draw_text(f"DEF: {card.def_}", (pos[0], pos[1] + 180), font, BLUE)
+                draw_text(f"ATK: {card.get_total_atk()}", (pos[0], pos[1] + 160), font, RED)
+                draw_text(f"DEF: {card.get_total_def()}", (pos[0], pos[1] + 180), font, BLUE)
 
     # Dibujar la descripción de la carta seleccionada
     draw_description(hovered_card)
