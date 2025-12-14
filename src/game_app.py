@@ -116,20 +116,35 @@ class GameApp:
 
         # cache scaled images for cards
         for card in cards:
+            # ensure integer, positive sizes
+            w = max(1, int(self.CARD_W))
+            h = max(1, int(self.CARD_H))
+            # small image
             try:
-                card.image_small = pygame.transform.smoothscale(card.image, (self.CARD_W, self.CARD_H))
+                small = pygame.transform.smoothscale(card.image, (w, h))
+                try:
+                    card.image_small = small.convert_alpha()
+                except Exception:
+                    card.image_small = small.convert()
             except Exception:
-                # fallback surface
-                s = pygame.Surface((self.CARD_W, self.CARD_H))
+                s = pygame.Surface((w, h), pygame.SRCALPHA)
                 s.fill((100, 100, 100))
                 card.image_small = s
+
+            # large image (cached) - avoid re-scaling every frame
             try:
-                card.image_large = pygame.transform.smoothscale(card.image, (self.CARD_W * 3, self.CARD_H * 3))
+                large_size = (max(1, int(w * 3)), max(1, int(h * 3)))
+                large = pygame.transform.smoothscale(card.image, large_size)
+                try:
+                    card.image_large = large.convert_alpha()
+                except Exception:
+                    card.image_large = large.convert()
             except Exception:
                 card.image_large = card.image_small
+
+            # defense-oriented rotated image: derive from small to avoid double rescale
             try:
-                tmp = pygame.transform.smoothscale(card.image, (int(self.CARD_H * 1.0), int(self.CARD_W * 0.66)))
-                card.image_def = pygame.transform.rotate(tmp, 90)
+                card.image_def = pygame.transform.rotate(card.image_small, 90)
             except Exception:
                 card.image_def = card.image_small
 
@@ -213,10 +228,11 @@ class GameApp:
         if self.graveyard:
             self.screen.blit(self.graveyard[self.graveyard_index].image_small, self.graveyard_position)
 
-        # hovered large
+        # hovered large (usar imagen cacheada)
         if self.hovered_card:
-            large = pygame.transform.smoothscale(self.hovered_card.image, (self.CARD_W * 3, self.CARD_H * 3))
-            self.screen.blit(large, (int(self.W * 0.78), int(self.H * 0.22)))
+            large = getattr(self.hovered_card, 'image_large', None) or getattr(self.hovered_card, 'image_small', None)
+            if large:
+                self.screen.blit(large, (int(self.W * 0.78), int(self.H * 0.22)))
 
         # names and life
         p1_name = self.font.render(self.player1_name, True, self.WHITE)
